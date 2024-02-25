@@ -8,6 +8,7 @@ export default class BoardPresenter {
   constructor({container}){
     this.container = container;
   }
+
   sort = new Sort();
   eventList = new EventList();
 
@@ -16,7 +17,7 @@ export default class BoardPresenter {
     render (this.eventList, this.container);
     render (new PointEdit(), this.eventList.getElement());
 
-    for (let i = 0; i<3; i++){
+    for (let i = 0; i<3; i++) {
       render (new Point(), this.eventList.getElement());
     }
 
