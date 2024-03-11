@@ -24,7 +24,7 @@ const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 's
 const OFFERS = ['Order Uber', 'Add luggage','Switch to comfort','Rent a car','Add breakfast','Book tickets','Lunch in city','Upgrade to a business class'];
 
 //дефолтный тип
-const DEFAULT_TYPE = 'flight'
+const DEFAULT_TYPE = 'flight';
 
 //пустая точка
 const POINT_EMPTY = {

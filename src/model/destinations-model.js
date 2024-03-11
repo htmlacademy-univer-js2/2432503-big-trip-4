@@ -1,4 +1,4 @@
-import { getRandomValue } from "../utils";
+import { getRandomValue } from '../utils';
 
 //модели пункта назначения
 export default class DestinationsModel{
