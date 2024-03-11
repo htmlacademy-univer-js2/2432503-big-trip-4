@@ -3,13 +3,13 @@ import {createElement} from '../render.js';
 import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration, getRandomValue } from '../utils.js';
 
 function createPointOffers(offers){
-    return (`
+  return (`
     <ul class="event__selected-offers">
     ${offers.offers.map((title, price) => `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
-  </li>` ).join('')}</ul>`);
+    </li>` ).join('')}</ul>`);
 }
 
 function createPoint(point) {
@@ -55,9 +55,7 @@ export default class Point {
   }
 
   getTemplate() {
-    return createPoint(
-       this.point
-    );
+    return createPoint(this.point);
   }
 
   getElement() {

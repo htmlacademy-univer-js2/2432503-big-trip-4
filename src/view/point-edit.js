@@ -21,24 +21,23 @@ function createPointPhotos(pointDestination){
 function createPointTypes(currentType){
 
   return TYPES.map((type) =>
-  ` <div class="event__type-item">
+  `<div class="event__type-item">
   <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}"${currentType === type ? 'checked' : ''}>
   <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
-</div>`).join('');
+  </div>`).join('');
 
 }
 
 function createPointOffers (pointOffers){
-  const offerItems = pointOffers.pointOffers.offers.map((offer) => {
-    return (`<div class="event__offer-selector">
+  const offerItems = pointOffers.pointOffers.offers.map((offer) =>
+    `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" checked>
     <label class="event__offer-label" for="${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </label>
-  </div>`);
-  }).join('');
+    </div>`).join('');
 
   return (`<div class="event__available-offers">${offerItems}</div>`);
 }
@@ -117,6 +116,7 @@ export default class PointEdit {
     this.pointDestination = pointDestination;
     this.pointOffers = pointOffers;
   }
+
   getTemplate() {
     return createPointEdit ({
       point: this.point,
