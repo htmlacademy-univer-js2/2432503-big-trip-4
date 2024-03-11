@@ -1,4 +1,4 @@
-import { OFFER_COUNT, PRICE, TYPES } from './const.js'
+import { OFFER_COUNT, PRICE, TYPES } from './const.js';
 import { getDestination } from './destination.js';
 import { getOffer } from './offer.js';
 import { getDate, getRandomValue, getRandomInteger } from './utils.js';

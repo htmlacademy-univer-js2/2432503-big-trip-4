@@ -1,6 +1,5 @@
 import { CITIES } from '../const.js';
 import {createElement} from '../render.js';
-import { createShedule } from '../template/point-shedule.js';
 import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration, getRandomValue } from '../utils.js';
 
 function createPointOffers(offers){

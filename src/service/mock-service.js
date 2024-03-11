@@ -49,7 +49,7 @@ export default class MockService {
       const destination = getRandomValue(this.destinations);
       const hasOffers = getRandomInteger(0,1);
       const offersByType = this.offers.find((offerByType) => offerByType.type === type);
-      const offerIds = (hasOffers) ? offersByType.offers.slice(0, getRandomInteger(0, TYPES.length)).map((offer) => offer.id): [];
+      const offerIds = (hasOffers) ? offersByType.offers.slice(0, getRandomInteger(0, TYPES.length)).map((offer) => offer.id) : [];
 
       return getPoint(type, destination.id, offerIds);
     });

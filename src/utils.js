@@ -82,7 +82,7 @@ function getRandomValue(items){
 }
 
 //вычетает указаное кол-во времени
-let date = dayjs().subtract(getRandomInteger(0,DURATION.DAY),'day').toDate();
+let dateToGet = dayjs().subtract(getRandomInteger(0,DURATION.DAY),'day').toDate();
 
 //формирует текущую дату и прибавляет к ней дату которая передается
 function getDate({next}){
@@ -91,9 +91,9 @@ function getDate({next}){
   const daysGap = getRandomInteger(0,DURATION.DAY);
 
   if (next){
-    date = dayjs(date).add(minutesGap,'minute').add(hoursGap,'hour').add(daysGap,'day').toDate;
+    dateToGet = dayjs(dateToGet).add(minutesGap,'minute').add(hoursGap,'hour').add(daysGap,'day').toDate;
   }
-  return date;
+  return dateToGet;
 }
 
 //эксопрт всех функций для использования в других файлах

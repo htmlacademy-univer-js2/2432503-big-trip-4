@@ -18,7 +18,6 @@ export default class BoardPresenter {
   }
 
   sort = new Sort();
- //eventList = new EventList();
 
   init() {
     render (this.sort, this.tripContainer);
