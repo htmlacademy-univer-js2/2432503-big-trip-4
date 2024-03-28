@@ -1,3 +1,4 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import {createElement} from '../render.js';
 
 function createFilter() {
@@ -26,19 +27,8 @@ function createFilter() {
 </form>`);
 }
 
-export default class Filter {
-  getTemplate() {
+export default class Filter extends AbstractView {
+  get template() {
     return createFilter();
-  }
-
-  getElement() {
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -16,6 +16,9 @@ const HOUR_IN_DAY = 24;
 const MSECOND_IN_HOUR = MINUTE_IN_HOUR * SECOND_IN_MINUTE * MSECOND_IN_SECOND;
 const MSECOND_IN_DAY = HOUR_IN_DAY * MSECOND_IN_HOUR;
 
+//константа для проверки нажатия кнопки
+const isEscape = (event) => event.key === 'Escape';
+
 //форматирование строки в дату и время
 function formatStringToDateToTime(date){
   return dayjs(date).format('YYYY-MM-DDTHH:mm');
@@ -91,12 +94,12 @@ function getDate({next}){
   const daysGap = getRandomInteger(0,DURATION.DAY);
 
   if (next){
-    dateToGet = dayjs(dateToGet).add(minutesGap,'minute').add(hoursGap,'hour').add(daysGap,'day').toDate;
+    dateToGet = dayjs(dateToGet).add(minutesGap,'minute').add(hoursGap,'hour').add(daysGap,'day').toDate();
   }
   return dateToGet;
 }
 
 //эксопрт всех функций для использования в других файлах
 export{
-  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate
+  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape
 };

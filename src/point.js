@@ -10,7 +10,7 @@ function getPoint(){
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
     dateFrom: getDate({next: false}),
     dateTo: getDate({next: true}),
-    destination: getDestination,
+    destination: getDestination(),
     isFavorite: Boolean(getRandomInteger(0,1)),
     offers: Array.from({length: OFFER_COUNT}, () => getOffer()),
     type: getRandomValue(TYPES)

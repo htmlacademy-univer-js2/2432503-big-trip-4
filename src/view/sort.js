@@ -1,3 +1,4 @@
+import AbstractView from '../framework/view/abstract-view.js';
 import {createElement} from '../render.js';
 
 function createSort() {
@@ -29,19 +30,8 @@ function createSort() {
 </form> `);
 }
 
-export default class Sort {
-  getTemplate() {
+export default class Sort extends AbstractView{
+  get template() {
     return createSort();
-  }
-
-  getElement() {
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

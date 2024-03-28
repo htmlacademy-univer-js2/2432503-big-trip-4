@@ -1,19 +1,20 @@
 import { CITIES } from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {createElement} from '../render.js';
 import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration, getRandomValue } from '../utils.js';
 
-function createPointOffers(offers){
+function createPointOffers(offer){
   return (`
     <ul class="event__selected-offers">
-    ${offers.offers.map((title, price) => `<li class="event__offer">
-    <span class="event__offer-title">${title}</span>
+    ${offer.offer?.map((offerItem) => `<li class="event__offer">
+    <span class="event__offer-title">${offerItem.title}</span>
     &plus;&euro;&nbsp;
-    <span class="event__offer-price">${price}</span>
+    <span class="event__offer-price">${offerItem.price}</span>
     </li>` ).join('')}</ul>`);
 }
 
-function createPoint(point) {
-  const {basePrice, dateFrom, dateTo, offers, isFavorite, type } = point;
+function createPoint(point, offer) {
+  const {basePrice, dateFrom, dateTo, isFavorite, type } = point;
   const favoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
 
   return (`             <li class="trip-events__item">
@@ -22,7 +23,7 @@ function createPoint(point) {
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${getRandomValue(CITIES)}</h3>
+    <h3 class="event__title">${type} ${point.destination.name}</h3>
     <div class="event__schedule">
   <p class="event__time">
     <time class="event__start-time" datetime="${formatStringToDateToTime(dateFrom)}">${formatToTime(dateFrom)}</time>
@@ -35,7 +36,7 @@ function createPoint(point) {
       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
-    ${createPointOffers({offers})}
+    ${createPointOffers({offer})}
     <button class="event__favorite-btn ${favoriteClass}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -49,23 +50,26 @@ function createPoint(point) {
 </li> `);
 }
 
-export default class Point {
-  constructor ({point}){
-    this.point = point;
+export default class Point extends AbstractView {
+  #point = null;
+  #offer = null;
+
+  #onRollUpClick = null;
+
+  #rollUpClickHandler = (event) => {
+    event.preventDefault();
+    this.#onRollUpClick();
   }
 
-  getTemplate() {
-    return createPoint(this.point);
+  constructor ({point, offer, onRollUpClick}){
+    super();
+    this.#point = point;
+    this.#offer = offer;
+    this.#onRollUpClick = onRollUpClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
   }
 
-  getElement() {
-    if(!this.element){
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createPoint(this.#point, this.#offer);
   }
 }
