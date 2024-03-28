@@ -6,42 +6,42 @@ import { getRandomInteger, getRandomValue } from '../utils';
 
 //сервис для моделей
 export default class MockService {
-  destinations = [];
-  offers = [];
-  points = [];
+  #destinations = [];
+  #offers = [];
+  #points = [];
 
   constructor (){
-    this.destinations = this.generateDestinations();
-    this.offers = this.generateOffers();
-    this.points = this.generatePoints();
+    this.#destinations = this.#generateDestinations();
+    this.#offers = this.#generateOffers();
+    this.#points = this.#generatePoints();
   }
 
-  getDestinations(){
-    return this.destinations;
+  get destinations(){
+    return this.#destinations;
   }
 
-  getOffers(){
-    return this.offers;
+  get offers(){
+    return this.#offers;
   }
 
-  getPoints(){
-    return this.points;
+  get points(){
+    return this.#points;
   }
 
-  generateDestinations(){
+  #generateDestinations(){
     return Array.from({
       length: DESTINATION_COUNT
     }, () => getDestination());
   }
 
-  generateOffers(){
+  #generateOffers(){
     return TYPES.map((type) => ({
       type,
       offers: Array.from({length: getRandomInteger(0, OFFER_COUNT)}, () => getOffer(type))
     }));
   }
 
-  generatePoints(){
+  #generatePoints(){
     return Array.from({
       length: POINT_COUNT
     }, () => {

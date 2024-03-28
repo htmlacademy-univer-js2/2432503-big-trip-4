@@ -1,11 +1,11 @@
 import TripInfo from './view/trip-info';
 import Filter from './view/filter';
-import { render, RenderPosition} from './render';
 import BoardPresenter from './presenter/board-presenter';
 import MockService from './service/mock-service';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import PointsModel from './model/points-model';
+import { RenderPosition, render } from './framework/render';
 
 //поиск элементов в документе
 //const bodyElement = document.querySelector('.page-body');
@@ -29,7 +29,7 @@ const boardPresenter = new BoardPresenter({
 
 });
 
-render (new TripInfo(), tripInfo, RenderPosition.AFTERBEGIN);
+render(new TripInfo(), tripInfo, RenderPosition.AFTERBEGIN);
 render(new Filter(), filter);
 
 boardPresenter.init();

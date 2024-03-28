@@ -2,42 +2,100 @@ import Sort from '../view/sort';
 import Point from '../view/point-view';
 import PointEdit from '../view/point-edit';
 import EventList from '../view/event-list';
-import { render } from '../render';
+import { render, replace } from '../framework/render';
+import { isEscape } from '../utils';
+
 
 //отрисовывает все
 export default class BoardPresenter {
+  #tripContainer = null;
+  #destinationsModel = null;
+  #offersModel = null;
+  #pointsModel = null;
+  #points = [];
+
   constructor({tripContainer, destinationsModel, offersModel, pointsModel}){
 
-    this.tripContainer = tripContainer;
-    this.destinationsModel = destinationsModel;
-    this.offersModel = offersModel;
-    this.pointsModel = pointsModel;
-    this.points = [...pointsModel.get()];
+    this.#tripContainer = tripContainer;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
+    this.#pointsModel = pointsModel;
 
-    this.eventList = new EventList();
+
   }
 
-  sort = new Sort();
+  #eventList = new EventList();
+  #sort = new Sort();
 
   init() {
-    render (this.sort, this.tripContainer);
-    render (this.eventList, this.tripContainer);
-    render (new PointEdit({
+    this.#points = [...this.#pointsModel.points];
 
-      point: this.points[0],
-      pointDestination: this.destinationsModel.getRandomDestination(),
-      pointOffers: this.offersModel.getRandomOffer()
+    render (this.#sort, this.#tripContainer);
+    render (this.#eventList, this.#tripContainer);
 
-    }), this.eventList.getElement());
+    this.#points.forEach((point) => {
+      const offer = this.#offersModel.getByType(point.type);
+      this.#renderPoint(point, offer);
+    });
+  }
 
-    this.points.forEach((point) => {
-      render(new Point({
-        point,
-        pointDestination: this.destinationsModel.getRandomDestination(),
-        pointOffers: this.offersModel.getRandomOffer()
-      }), this.eventList.getElement());
+  #renderPoint = (point, offer) => {
+    const pointComponent = new Point({
+      point, offer, onRollUpClick: pointRollUpClickHandler
+    });
+    const pointEditComponent = new PointEdit({
+      point: point,
+      pointDestination: point.destination,
+      pointOffers: offer,
+      onRollUpClick: formRollUpClickHandler,
+      onSubmitForm: submitFormHandler,
+      onDeleteClick: deleteClickHandler
     });
 
-  }
+    //замена точки на форму
+    function replacePointToForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    //замена формы на точку
+    function replaceFormToPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
+    //нажатие кнопки в форме
+    function onFormKeyDown(event) {
+      if (isEscape(event)) {
+        event.preventDefault();
+        replaceFormToPoint();
+      }
+    }
+
+    //обработчик нажатия на стрелку в точке
+    function pointRollUpClickHandler() {
+      replacePointToForm();
+      document.addEventListener('keydown', onFormKeyDown);
+    }
+
+    //обработчик нажатия на стрелку в форме
+    function formRollUpClickHandler() {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onFormKeyDown);
+    }
+
+    //сохранение значения формы
+    function submitFormHandler() {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onFormKeyDown);
+    }
+
+    //удаление значения формы
+    function deleteClickHandler() {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onFormKeyDown);
+    }
+
+    render(pointComponent, this.#eventList.element);
+  };
+
 
 }
