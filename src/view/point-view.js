@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration, getRandomValue } from '../utils.js';
+import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration } from '../utils.js';
 
 function createPointOffers(offer){
   return (`
@@ -57,7 +57,7 @@ export default class Point extends AbstractView {
   #rollUpClickHandler = (event) => {
     event.preventDefault();
     this.#onRollUpClick();
-  }
+  };
 
   constructor ({point, offer, onRollUpClick}){
     super();
