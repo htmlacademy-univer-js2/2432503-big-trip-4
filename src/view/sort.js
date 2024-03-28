@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 
 function createSort() {
   return (` <form class="trip-events__trip-sort  trip-sort" action="#" method="get">

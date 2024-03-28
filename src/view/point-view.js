@@ -1,6 +1,4 @@
-import { CITIES } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration, getRandomValue } from '../utils.js';
 
 function createPointOffers(offer){

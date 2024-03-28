@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 
 function createTripInfo () {
   return (` <section class="trip-main__trip-info  trip-info">

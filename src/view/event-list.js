@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 
 function createEventList () {
   return (`

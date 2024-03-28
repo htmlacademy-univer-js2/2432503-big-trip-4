@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 
 function createFilter() {
   return (` <form class="trip-filters" action="#" method="get">

@@ -1,6 +1,5 @@
 import { CITIES, POINT_EMPTY, TYPES } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 import { formatStringToDateToTime } from '../utils.js';
 
 function createPointCitiesOptions(){
@@ -125,18 +124,19 @@ export default class PointEdit extends AbstractView {
   #rollUpClickHandler = (event) => {
     event.preventDefault();
     this.#onRollUpClick();
-  }
+  };
 
   #submitFormHandler = (event) => {
     event.preventDefault();
     this.#onSubmitForm();
-  }
+  };
 
   #deleteClickHandler = (event) => {
     event.preventDefault();
     this.#onDeleteClick();
-  }
-  constructor ({point = POINT_EMPTY, pointDestination, pointOffers, onRollUpClick, onSubmitForm, onDeleteClick }){
+  };
+
+  constructor({ point = POINT_EMPTY, pointDestination, pointOffers, onRollUpClick, onSubmitForm, onDeleteClick }) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
@@ -144,7 +144,7 @@ export default class PointEdit extends AbstractView {
 
     this.#onRollUpClick = onRollUpClick;
     this.#onSubmitForm = onSubmitForm;
-    this.#onDeleteClick =  onDeleteClick;
+    this.#onDeleteClick = onDeleteClick;
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
     this.element.querySelector('.event--edit').addEventListener('submit', this.#submitFormHandler);

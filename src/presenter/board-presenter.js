@@ -2,7 +2,7 @@ import Sort from '../view/sort';
 import Point from '../view/point-view';
 import PointEdit from '../view/point-edit';
 import EventList from '../view/event-list';
-import { remove, render, replace } from '../framework/render';
+import { render, replace } from '../framework/render';
 import { isEscape } from '../utils';
 
 
