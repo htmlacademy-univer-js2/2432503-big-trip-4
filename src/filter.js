@@ -18,5 +18,5 @@ function getFilters(points){
 }
 
 export {
-    getFilters
+  getFilters
 };

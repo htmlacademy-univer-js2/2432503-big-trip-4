@@ -6,7 +6,7 @@ function createSortItemTemplate(sortItem){
   <input id="sort-${sortItem.type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${sortItem.type}"
   ${(sortItem.defaultSelected ? 'checked' : '')} ${(sortItem.active) ? '' : 'disabled'}>
   <label class="trip-sort__btn" for="sort-${(sortItem.type)}">${(sortItem.type)}</label>
-  </div>`)
+  </div>`);
 }
 
 function createSort() {
