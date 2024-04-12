@@ -1,15 +1,13 @@
 import TripInfo from './view/trip-info';
-import Filter from './view/filter';
 import BoardPresenter from './presenter/board-presenter';
 import MockService from './service/mock-service';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import PointsModel from './model/points-model';
 import { RenderPosition, render } from './framework/render';
+import FilterPresenter from './presenter/filter-presenter';
 
 //поиск элементов в документе
-//const bodyElement = document.querySelector('.page-body');
-//const header = bodyElement.querySelector('.page-header');
 const tripInfo = document.querySelector('.trip-main');
 const filter = tripInfo.querySelector('.trip-controls__filters');
 const main = document.querySelector('.page-main');
@@ -29,8 +27,13 @@ const boardPresenter = new BoardPresenter({
 
 });
 
+const filterPresenter = new FilterPresenter({
+  container: filter, pointsModel
+});
+
 render(new TripInfo(), tripInfo, RenderPosition.AFTERBEGIN);
-render(new Filter(), filter);
+
 
 boardPresenter.init();
+filterPresenter.init();
 

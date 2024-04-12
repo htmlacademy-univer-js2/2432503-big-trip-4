@@ -99,7 +99,22 @@ function getDate({next}){
   return dateToGet;
 }
 
+// проверка точки в будущем
+function isPointFuture(point){
+  return dayjs().isBefore(point.dateFrom);
+}
+
+//проверка точки в настоящем
+function isPointPresent(point){
+  return dayjs().isBefore(point.dateTo) && dayjs().isAfter(point.dateFrom);
+}
+
+//проверка точки в прошлом
+function isPointPast(point){
+  return dayjs().isAfter(point.dateTo);
+}
+
 //эксопрт всех функций для использования в других файлах
 export{
-  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape
+  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast
 };

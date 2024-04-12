@@ -1,3 +1,4 @@
+
 //список городов
 const CITIES = ['Chamonix', 'Geneva', 'Amsterdam', 'Helsinki', 'Oslo', 'Kopenhagen', 'Den Haag', 'Rotterdam', 'Saint Petersburg', 'Moskow', 'Sochi', 'Tokio'];
 
@@ -46,6 +47,44 @@ const POINT_EMPTY = {
   type: DEFAULT_TYPE
 };
 
+const FilterTypes = {
+  EVERYTHING : 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
+
+const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+const SORTING_ITEMS = [
+  {
+    type: SortTypes.DAY,
+    active: true,
+    defaultSelected: true
+  },
+  {
+    type: SortTypes.EVENT,
+    active: false
+  },
+  {
+    type: SortTypes.TIME,
+    active: true
+  },
+  {
+    type: SortTypes.PRICE,
+    active: true
+  },
+  {
+    type: SortTypes.OFFERS,
+    active: false
+  }
+];
+
 export{
-  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT, DESTINATION_COUNT, POINT_COUNT
+  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT, DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, SORTING_ITEMS
 };

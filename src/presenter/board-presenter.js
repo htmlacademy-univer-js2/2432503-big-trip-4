@@ -4,6 +4,7 @@ import PointEdit from '../view/point-edit';
 import EventList from '../view/event-list';
 import { render, replace } from '../framework/render';
 import { isEscape } from '../utils';
+import EmptyListView from '../view/empty-list';
 
 
 //отрисовывает все
@@ -29,6 +30,11 @@ export default class BoardPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
+
+    if (this.#points.length === 0){
+      render(new EmptyListView(), this.#tripContainer);
+      return;
+    }
 
     render (this.#sort, this.#tripContainer);
     render (this.#eventList, this.#tripContainer);
