@@ -26,8 +26,8 @@ function createPointTypes(currentType){
     </div>`).join('');
 }
 
-function createPointOffers (pointOffers){
-  const offerItems = pointOffers.pointOffers.map((offer) => {
+function createPointOffers (offers){
+  const offerItems = offers.map((offer) => {
     const offerName = offer.title.replace(' ', '').toLowerCase();
     return (`<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerName}-1" type="checkbox" name="event-offer-luggage" checked>
@@ -41,9 +41,9 @@ function createPointOffers (pointOffers){
   return (`<div class="event__available-offers">${offerItems}</div>`);
 }
 
-function createPointEdit({point, pointDestination, pointOffers}) {
+function createPointEdit({point, pointDestination}) {
 
-  const {basePrice, dateFrom, dateTo, type} = point;
+  const {basePrice, dateFrom, dateTo, offers, type} = point;
 
   return (` <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -96,7 +96,7 @@ function createPointEdit({point, pointDestination, pointOffers}) {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${createPointOffers({pointOffers})}
+        ${createPointOffers(offers)}
       </section>
 
       <section class="event__section  event__section--destination">
@@ -136,11 +136,10 @@ export default class PointEdit extends AbstractView {
     this.#onDeleteClick();
   };
 
-  constructor({ point = POINT_EMPTY, pointDestination, pointOffers, onRollUpClick, onSubmitForm, onDeleteClick }) {
+  constructor({ point = POINT_EMPTY, pointDestination, onRollUpClick, onSubmitForm, onDeleteClick }) {
     super();
     this.#point = point;
     this.#pointDestination = pointDestination;
-    this.#pointOffers = pointOffers;
 
     this.#onRollUpClick = onRollUpClick;
     this.#onSubmitForm = onSubmitForm;
@@ -154,8 +153,7 @@ export default class PointEdit extends AbstractView {
   get template() {
     return createPointEdit ({
       point: this.#point,
-      pointDestination: this.#pointDestination,
-      pointOffers: this.#pointOffers
+      pointDestination: this.#pointDestination
     });
   }
 

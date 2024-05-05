@@ -21,7 +21,7 @@ const isEscape = (event) => event.key === 'Escape';
 
 //форматирование строки в дату и время
 function formatStringToDateToTime(date){
-  return dayjs(date).format('YYYY-MM-DDTHH:mm');
+  return dayjs(date).format('YY/MM/DD HH:mm');
 }
 
 //фоматирование строки к сокращенной дате
@@ -114,7 +114,12 @@ function isPointPast(point){
   return dayjs().isAfter(point.dateTo);
 }
 
+//обновляет значение точки
+function updatePoint(points, update){
+  return points.map((point) => point.id === update.id ? update : point);
+}
+
 //эксопрт всех функций для использования в других файлах
 export{
-  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast
+  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast, updatePoint
 };

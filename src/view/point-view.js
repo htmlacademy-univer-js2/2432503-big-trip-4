@@ -1,18 +1,18 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDuration } from '../utils.js';
 
-function createPointOffers(offer){
+function createPointOffers(offers){
   return (`
     <ul class="event__selected-offers">
-    ${offer.offer?.map((offerItem) => `<li class="event__offer">
+    ${offers?.map((offerItem) => `<li class="event__offer">
     <span class="event__offer-title">${offerItem.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offerItem.price}</span>
     </li>` ).join('')}</ul>`);
 }
 
-function createPoint(point, offer) {
-  const {basePrice, dateFrom, dateTo, isFavorite, type } = point;
+function createPoint(point) {
+  const {basePrice, dateFrom, dateTo, isFavorite, offers, type } = point;
   const favoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
 
   return (`             <li class="trip-events__item">
@@ -34,7 +34,7 @@ function createPoint(point, offer) {
       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
-    ${createPointOffers({offer})}
+    ${createPointOffers(offers)}
     <button class="event__favorite-btn ${favoriteClass}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -50,24 +50,30 @@ function createPoint(point, offer) {
 
 export default class Point extends AbstractView {
   #point = null;
-  #offer = null;
 
   #onRollUpClick = null;
+  #onFavoriteClick = null;
 
   #rollUpClickHandler = (event) => {
     event.preventDefault();
     this.#onRollUpClick();
   };
 
-  constructor ({point, offer, onRollUpClick}){
+  #favoriteClickHandler = (event) => {
+    event.preventDefault();
+    this.#onFavoriteClick();
+  };
+
+  constructor ({point, onRollUpClick, onFavoriteClick}){
     super();
     this.#point = point;
-    this.#offer = offer;
     this.#onRollUpClick = onRollUpClick;
+    this.#onFavoriteClick = onFavoriteClick;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
   }
 
   get template() {
-    return createPoint(this.#point, this.#offer);
+    return createPoint(this.#point);
   }
 }
