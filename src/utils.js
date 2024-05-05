@@ -84,14 +84,14 @@ function getRandomValue(items){
   return items[getRandomInteger(0,items.length - 1)];
 }
 
-//вычетает указаное кол-во времени
-let dateToGet = dayjs().subtract(getRandomInteger(0,DURATION.DAY),'day').toDate();
-
 //формирует текущую дату и прибавляет к ней дату которая передается
 function getDate({next}){
   const minutesGap = getRandomInteger(0,DURATION.MIN);
   const hoursGap = getRandomInteger(1,DURATION.HOUR);
   const daysGap = getRandomInteger(0,DURATION.DAY);
+
+  //вычетает указаное кол-во времени
+  let dateToGet = dayjs().subtract(getRandomInteger(0,DURATION.DAY),'day').toDate();
 
   if (next){
     dateToGet = dayjs(dateToGet).add(minutesGap,'minute').add(hoursGap,'hour').add(daysGap,'day').toDate();
@@ -119,7 +119,21 @@ function updatePoint(points, update){
   return points.map((point) => point.id === update.id ? update : point);
 }
 
+//сортировка точек по дню
+function sortPointsByDay(firstPoint, secondPoint) {
+  return new Date(firstPoint.dateFrom) - new Date(secondPoint.dateFrom);
+}
+
+//сортировка точек по времени
+function sortPointsByTime(firstPoint, secondPoint) {
+  return dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom)) - dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom));
+}
+
+function sortPointsByPrice(firstPoint, secondPoint) {
+  return firstPoint.basePrice - secondPoint.basePrice;
+}
+
 //эксопрт всех функций для использования в других файлах
 export{
-  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast, updatePoint
+  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast, updatePoint, sortPointsByDay, sortPointsByTime, sortPointsByPrice
 };

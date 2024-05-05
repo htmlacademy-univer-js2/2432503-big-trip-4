@@ -1,3 +1,4 @@
+import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from './utils';
 
 //список городов
 const CITIES = ['Chamonix', 'Geneva', 'Amsterdam', 'Helsinki', 'Oslo', 'Kopenhagen', 'Den Haag', 'Rotterdam', 'Saint Petersburg', 'Moskow', 'Sochi', 'Tokio'];
@@ -47,6 +48,7 @@ const POINT_EMPTY = {
   type: DEFAULT_TYPE
 };
 
+//типы фильтров
 const FilterTypes = {
   EVERYTHING : 'everything',
   FUTURE: 'future',
@@ -54,6 +56,7 @@ const FilterTypes = {
   PAST: 'past'
 };
 
+//типы сортирвоки
 const SortTypes = {
   DAY: 'day',
   EVENT: 'event',
@@ -61,36 +64,23 @@ const SortTypes = {
   PRICE: 'price',
   OFFERS: 'offers'
 };
-const SORTING_ITEMS = [
-  {
-    type: SortTypes.DAY,
-    active: true,
-    defaultSelected: true
-  },
-  {
-    type: SortTypes.EVENT,
-    active: false
-  },
-  {
-    type: SortTypes.TIME,
-    active: true
-  },
-  {
-    type: SortTypes.PRICE,
-    active: true
-  },
-  {
-    type: SortTypes.OFFERS,
-    active: false
-  }
-];
 
+//режим точки
 const PointMode = {
   DEFAULT: 'default',
   EDIT: 'edit'
 };
 
+//активные типы сортировки
+const ACTIVE_SORT_TYPES = [SortTypes.DAY, SortTypes.TIME, SortTypes.PRICE];
+
+//параметры сортировки
+const SortOptions = {
+  [SortTypes.DAY] : (points) => [...points].sort(sortPointsByDay),
+  [SortTypes.TIME] : (points) => [...points].sort(sortPointsByTime),
+  [SortTypes.PRICE] : (points) => [...points].sort(sortPointsByPrice)
+};
 
 export{
-  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT, DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, SORTING_ITEMS, PointMode
+  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT, DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, PointMode, ACTIVE_SORT_TYPES, SortOptions
 };
