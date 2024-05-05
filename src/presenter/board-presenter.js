@@ -1,28 +1,24 @@
 import Sort from '../view/sort';
-import Point from '../view/point-view';
-import PointEdit from '../view/point-edit';
 import EventList from '../view/event-list';
-import { render, replace } from '../framework/render';
-import { isEscape } from '../utils';
+import {render} from '../framework/render';
+import {updatePoint} from '../utils';
 import EmptyListView from '../view/empty-list';
+import PointPresenter from './point-presenter';
 
 
 //отрисовывает все
 export default class BoardPresenter {
   #tripContainer = null;
-  #destinationsModel = null;
   #offersModel = null;
   #pointsModel = null;
   #points = [];
+  #pointPresenters = new Map();
 
-  constructor({tripContainer, destinationsModel, offersModel, pointsModel}){
+  constructor({tripContainer, offersModel, pointsModel}){
 
     this.#tripContainer = tripContainer;
-    this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
-
-
   }
 
   #eventList = new EventList();
@@ -40,68 +36,28 @@ export default class BoardPresenter {
     render (this.#eventList, this.#tripContainer);
 
     this.#points.forEach((point) => {
-      const offer = this.#offersModel.getByType(point.type);
-      this.#renderPoint(point, offer);
+      this.#renderPoint(point);
     });
   }
 
-  #renderPoint = (point, offer) => {
-    const pointComponent = new Point({
-      point, offer, onRollUpClick: pointRollUpClickHandler
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter({
+      container: this.#eventList.element,
+      offersModel: this.#offersModel,
+      pointsModel: this.#pointsModel,
+      onDataChange: this.#onDataChange,
+      onModeChange: this.#onModeChange
     });
-    const pointEditComponent = new PointEdit({
-      point: point,
-      pointDestination: point.destination,
-      pointOffers: offer,
-      onRollUpClick: formRollUpClickHandler,
-      onSubmitForm: submitFormHandler,
-      onDeleteClick: deleteClickHandler
-    });
-
-    //замена точки на форму
-    function replacePointToForm() {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    //замена формы на точку
-    function replaceFormToPoint() {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    //нажатие кнопки в форме
-    function onFormKeyDown(event) {
-      if (isEscape(event)) {
-        event.preventDefault();
-        replaceFormToPoint();
-      }
-    }
-
-    //обработчик нажатия на стрелку в точке
-    function pointRollUpClickHandler() {
-      replacePointToForm();
-      document.addEventListener('keydown', onFormKeyDown);
-    }
-
-    //обработчик нажатия на стрелку в форме
-    function formRollUpClickHandler() {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onFormKeyDown);
-    }
-
-    //сохранение значения формы
-    function submitFormHandler() {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onFormKeyDown);
-    }
-
-    //удаление значения формы
-    function deleteClickHandler() {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onFormKeyDown);
-    }
-
-    render(pointComponent, this.#eventList.element);
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   };
 
+  #onDataChange = (updatedPoint, offer) => {
+    this.#points = updatePoint(this.#points, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, offer);
+  };
 
+  #onModeChange = () => {
+    this.#pointPresenters.forEach((pointPresenter) => pointPresenter.reset());
+  };
 }
