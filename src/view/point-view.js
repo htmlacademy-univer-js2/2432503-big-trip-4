@@ -62,7 +62,7 @@ export default class Point extends AbstractView {
   #favoriteClickHandler = (event) => {
     event.preventDefault();
     this.#onFavoriteClick();
-  }
+  };
 
   constructor ({point, onRollUpClick, onFavoriteClick}){
     super();
