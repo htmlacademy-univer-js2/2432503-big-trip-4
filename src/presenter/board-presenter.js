@@ -15,12 +15,14 @@ export default class BoardPresenter {
   #points = [];
   #pointPresenters = new Map();
   #sort = null;
+  #destinationsModel = null;
 
   #currentSortType = SortTypes.DAY;
 
-  constructor({tripContainer, offersModel, pointsModel}){
+  constructor({tripContainer, destinationsModel, offersModel, pointsModel}){
 
     this.#tripContainer = tripContainer;
+    this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
   }
@@ -83,6 +85,7 @@ export default class BoardPresenter {
       container: this.#eventList.element,
       offersModel: this.#offersModel,
       pointsModel: this.#pointsModel,
+      destinationsModel: this.#destinationsModel,
       onDataChange: this.#onDataChange,
       onModeChange: this.#onModeChange
     });

@@ -4,7 +4,7 @@ import { formatStringToDateToTime, formatToShortDate, formatToTime, getPointDura
 function createPointOffers(offers){
   return (`
     <ul class="event__selected-offers">
-    ${offers?.map((offerItem) => `<li class="event__offer">
+    ${offers.offers.map((offerItem) => `<li class="event__offer">
     <span class="event__offer-title">${offerItem.title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offerItem.price}</span>

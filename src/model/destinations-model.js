@@ -1,5 +1,3 @@
-import { getRandomValue } from '../utils';
-
 //модели пункта назначения
 export default class DestinationsModel{
   #service = null;
@@ -18,9 +16,5 @@ export default class DestinationsModel{
   //получение пункта назначения по айди
   getByID(id){
     return this.#destinations.find((destination) => destination.id === id);
-  }
-
-  getRandomDestination(){
-    return getRandomValue(this.#destinations);
   }
 }

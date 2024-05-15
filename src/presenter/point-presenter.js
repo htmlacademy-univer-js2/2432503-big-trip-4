@@ -14,11 +14,13 @@ export default class PointPresenter {
   #onDataChange = null;
   #onModeChange = null;
   #mode = PointMode.DEFAULT;
+  #destinationsModel = null;
 
-  constructor ({container, offersModel, pointsModel, onDataChange, onModeChange}) {
+  constructor ({container, offersModel, pointsModel, destinationsModel, onDataChange, onModeChange}) {
     this.#container = container;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
+    this.#destinationsModel = destinationsModel;
     this.#onDataChange = onDataChange;
     this.#onModeChange = onModeChange;
   }
@@ -35,7 +37,7 @@ export default class PointPresenter {
     });
     this.#pointEditComponent = new PointEdit({
       point: point,
-      pointDestination: point.destination,
+      destinations: this.#destinationsModel.destinations,
       onRollUpClick: this.#formRollUpClickHandler,
       onSubmitForm: this.#submitFormHandler,
       onDeleteClick: this.#deleteClickHandler
@@ -60,6 +62,7 @@ export default class PointPresenter {
 
   reset() {
     if (this.#mode !== PointMode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -92,6 +95,7 @@ export default class PointPresenter {
   #onFormKeyDown = (event) => {
     if (isEscape(event)) {
       event.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
       document.addEventListener('keydown', this.#onFormKeyDown);
     }
@@ -117,6 +121,7 @@ export default class PointPresenter {
 
   //удаление значения формы
   #deleteClickHandler = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#onFormKeyDown);
   };
