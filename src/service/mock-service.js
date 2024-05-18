@@ -13,7 +13,7 @@ export default class MockService {
   constructor (){
     this.#destinations = this.#generateDestinations();
     this.#offers = this.#generateOffers();
-    this.#points = this.#generatePoints();
+    this.#points = this.#generatePoints(this.destinations);
   }
 
   get destinations(){
@@ -41,17 +41,14 @@ export default class MockService {
     }));
   }
 
-  #generatePoints(){
+  #generatePoints(destinations){
     return Array.from({
       length: getRandomInteger(0, POINT_COUNT)
     }, () => {
       const type = getRandomValue(TYPES);
-      const destination = getRandomValue(this.destinations);
-      const hasOffers = getRandomInteger(0,1);
       const offersByType = this.offers.find((offerByType) => offerByType.type === type);
-      const offerIds = (hasOffers) ? offersByType.offers.slice(0, getRandomInteger(0, TYPES.length)).map((offer) => offer.id) : [];
 
-      return getPoint(type, destination.id, offerIds);
+      return getPoint(destinations, offersByType);
     });
   }
 }

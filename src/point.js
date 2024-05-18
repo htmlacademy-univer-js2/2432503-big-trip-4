@@ -1,19 +1,17 @@
-import { OFFER_COUNT, PRICE, TYPES } from './const.js';
-import { getDestination } from './destination.js';
-import { getOffer } from './offer.js';
+import { PRICE } from './const.js';
 import { getDate, getRandomValue, getRandomInteger } from './utils.js';
 
 //создание точки маршрутка
-function getPoint(){
+function getPoint(destinations, offers){
   return {
     id: crypto.randomUUID(),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
     dateFrom: getDate({next: false}),
     dateTo: getDate({next: true}),
-    destination: getDestination(),
+    destination: getRandomValue(destinations),
     isFavorite: Boolean(getRandomInteger(0,1)),
-    offers: Array.from({length: OFFER_COUNT}, () => getOffer()),
-    type: getRandomValue(TYPES)
+    offers: offers,
+    type: offers.type
   };
 }
 
