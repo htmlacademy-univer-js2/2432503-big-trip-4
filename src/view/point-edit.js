@@ -1,6 +1,8 @@
+import flatpickr from 'flatpickr';
 import { POINT_EMPTY, TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatStringToDateToTime } from '../utils.js';
+import 'flatpickr/dist/flatpickr.min.css';
 
 function createPointCitiesOptions(destinations){
   return (`
@@ -122,6 +124,9 @@ export default class PointEdit extends AbstractStatefulView {
   #onSubmitForm = null;
   #onDeleteClick = null;
 
+  #datepickerFrom = null;
+  #datepickerTo = null;
+
   #rollUpClickHandler = (event) => {
     event.preventDefault();
     this.#onRollUpClick();
@@ -166,6 +171,8 @@ export default class PointEdit extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#changePriceHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeOffersHandler);
+
+    this.#setDatepicker();
   }
 
   static parsePointToState = ({point}) => ({point});
@@ -213,5 +220,72 @@ export default class PointEdit extends AbstractStatefulView {
         offers: checkedOffers.map((offer) => offer.id)
       }
     });
+  };
+
+  //установка времени
+  #setDatepicker = () => {
+    const [dateFromElement, dateToElement] = this.element.querySelectorAll('.event__input--time');
+    const dateConfig = {
+      enableTime: true,
+      dateFormat: 'd/m/y H:i',
+      locale: {firstDayOfWeek: 1},
+      'time_24hr' : true
+    };
+
+    this.#datepickerFrom = flatpickr(
+      dateFromElement, {
+        ...dateConfig,
+        defaultDate: this._state.point.dateFrom,
+        maxDate: this._state.point.dateTo,
+        onClose: this.#closeDateFromHandler
+      }
+    );
+
+    this.#datepickerTo = flatpickr(
+      dateToElement, {
+        ...dateConfig,
+        defaultDate: this._state.point.dateTo,
+        maxDate: this._state.point.dateFrom,
+        onClose: this.#closeDateToHandler
+      }
+    );
+  };
+
+  //обработчик закрытия начала пути
+  #closeDateFromHandler = ([date]) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        dateFrom: date
+      }
+    });
+
+    this.#datepickerTo.set('minDate', this._state.point.dateFrom);
+  };
+
+  //обработчик закрытия конца пути
+  #closeDateToHandler = ([date]) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        dateTo: date
+      }
+    });
+
+    this.#datepickerFrom.set('maxDate', this._state.point.dateFrom);
+  };
+
+  //удаление элемента
+  #removeElement = () => {
+    super.removeElement();
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
   };
 }
