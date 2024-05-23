@@ -129,11 +129,20 @@ function sortPointsByTime(firstPoint, secondPoint) {
   return dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom)) - dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom));
 }
 
+//для сортировки точек по цене
 function sortPointsByPrice(firstPoint, secondPoint) {
-  return firstPoint.basePrice - secondPoint.basePrice;
+  return secondPoint.basePrice - firstPoint.basePrice;
+}
+
+//проверка на разницу между точками
+function isDifference(firstPoint, secondPoint) {
+  return firstPoint.dateFrom !== secondPoint.dateFrom || firstPoint.basePrice !== secondPoint.basePrice || sortPointsByTime(firstPoint, secondPoint) !== 0;
 }
 
 //эксопрт всех функций для использования в других файлах
 export{
-  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,getSheduleDate,getRandomInteger,getRandomValue,getDate, isEscape, isPointFuture, isPointPresent, isPointPast, updatePoint, sortPointsByDay, sortPointsByTime, sortPointsByPrice
+  formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,
+  getSheduleDate,getRandomInteger,getRandomValue,getDate,isEscape,
+  isPointFuture, isPointPresent, isPointPast, updatePoint,sortPointsByDay,
+  sortPointsByTime, sortPointsByPrice, isDifference
 };

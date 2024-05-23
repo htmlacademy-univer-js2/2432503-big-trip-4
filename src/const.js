@@ -1,4 +1,4 @@
-import { sortPointsByDay, sortPointsByPrice, sortPointsByTime } from './utils';
+import { isPointFuture, isPointPast, isPointPresent, sortPointsByDay, sortPointsByPrice, sortPointsByTime } from './utils';
 
 //список городов
 const CITIES = ['Chamonix', 'Geneva', 'Amsterdam', 'Helsinki', 'Oslo', 'Kopenhagen', 'Den Haag', 'Rotterdam', 'Saint Petersburg', 'Moskow', 'Sochi', 'Tokio'];
@@ -81,6 +81,38 @@ const SortOptions = {
   [SortTypes.PRICE] : (points) => [...points].sort(sortPointsByPrice)
 };
 
+//обновление типа точки
+const UpdateType = {
+  PATCH: 'patch',
+  MINOR: 'minor',
+  MAJOR: 'major'
+};
+
+//действие пользователя
+const UserAction = {
+  UPDATE_POINT: 'update-point',
+  ADD_POINT: 'add-point',
+  DELETE_POINT: 'delite-point'
+};
+
+//фильтры
+const FilterOptions = {
+  [FilterTypes.EVERYTHING]: (points) => [...points],
+  [FilterTypes.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
+  [FilterTypes.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
+  [FilterTypes.PAST]: (points) => points.filter((point) => isPointPast(point))
+};
+
+//текст для пустого списка
+const EmptyListText = {
+  [FilterTypes.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterTypes.FUTURE]: 'There are no future events',
+  [FilterTypes.PRESENT]: 'There are no present events',
+  [FilterTypes.PAST]: 'There are no past events'
+};
+
 export{
-  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT, DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, PointMode, ACTIVE_SORT_TYPES, SortOptions
+  CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT,
+  DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, PointMode, ACTIVE_SORT_TYPES, SortOptions,
+  UpdateType, UserAction, FilterOptions, EmptyListText
 };
