@@ -112,6 +112,7 @@ export default class PointPresenter {
 
   //обработчик нажатия на стрелку в форме
   #formRollUpClickHandler = () => {
+    this.#pointEditComponent.reset(this.point);
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#onFormKeyDown);
   };

@@ -1,6 +1,5 @@
 import TripInfo from './view/trip-info';
 import BoardPresenter from './presenter/board-presenter';
-import MockService from './service/mock-service';
 import DestinationsModel from './model/destinations-model';
 import OffersModel from './model/offers-model';
 import PointsModel from './model/points-model';
@@ -8,7 +7,10 @@ import { RenderPosition, render } from './framework/render';
 import FilterPresenter from './presenter/filter-presenter';
 import FiltersModel from './model/filters-model';
 import NewPoint from './view/new-point-view';
+import PointApiService from './service/point-api-service';
 
+const AUTHORIZATION = 'Basic MarMsa';
+const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
 
 //поиск элементов в документе
 const tripInfo = document.querySelector('.trip-main');
@@ -17,10 +19,10 @@ const main = document.querySelector('.page-main');
 const eventList = main.querySelector('.trip-events');
 
 //создание моделей
-const mockService = new MockService();
-const destinationsModel = new DestinationsModel(mockService);
-const offersModel = new OffersModel(mockService);
-const pointsModel = new PointsModel(mockService);
+const apiService = new PointApiService(END_POINT, AUTHORIZATION);
+const destinationsModel = new DestinationsModel(apiService);
+const offersModel = new OffersModel(apiService);
+const pointsModel = new PointsModel({apiService, destinationsModel, offersModel});
 const filtersModel = new FiltersModel();
 const boardPresenter = new BoardPresenter({
 
@@ -55,4 +57,5 @@ render(newPointComponent, tripInfo, RenderPosition.BEFOREEND);
 
 boardPresenter.init();
 filterPresenter.init();
+pointsModel.init();
 

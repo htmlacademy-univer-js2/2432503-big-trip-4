@@ -39,7 +39,7 @@ const DURATION = {
 
 //пустая точка
 const POINT_EMPTY = {
-  basePrice: 0,
+  price: 0,
   dateFrom: null,
   dateTo: null,
   destination: null,
@@ -85,7 +85,8 @@ const SortOptions = {
 const UpdateType = {
   PATCH: 'patch',
   MINOR: 'minor',
-  MAJOR: 'major'
+  MAJOR: 'major',
+  INIT: 'init'
 };
 
 //действие пользователя
