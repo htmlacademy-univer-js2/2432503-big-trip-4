@@ -21,10 +21,10 @@ export default class BoardPresenter {
   #newPointPresenter = null;
   #emptyListComponent = null;
   #filterType = FilterTypes.EVERYTHING;
-
   #eventList = new EventList();
-
   #currentSortType = SortTypes.DAY;
+  #isLoading = true;
+  #isLoadingError = false;
 
   constructor({tripContainer, destinationsModel, offersModel, pointsModel, filtersModel, onNewPointDestroy}){
 
@@ -70,6 +70,22 @@ export default class BoardPresenter {
   }
 
   #renderTrip = () => {
+    if (this.#isLoading) {
+      this.#renderEmptyList({
+        isLoading: true
+      });
+
+      return;
+    }
+
+    if (this.#isLoadingError) {
+      this.#renderEmptyList({
+        isLoadingError: true
+      });
+
+      return;
+    }
+
     if (this.points.length === 0){
       this.#renderEmptyList();
       return;
@@ -137,9 +153,11 @@ export default class BoardPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   };
 
-  #renderEmptyList = () => {
+  #renderEmptyList = ({isLoading = false, isLoadingError = false} = {}) => {
     this.#emptyListComponent = new EmptyListView({
-      filterType: this.#filterType
+      filterType: this.#filterType,
+      isLoading,
+      isLoadingError
     });
 
     render(this.#emptyListComponent, this.#tripContainer, RenderPosition.AFTERBEGIN);
@@ -198,6 +216,12 @@ export default class BoardPresenter {
         this.#renderTrip();
         break;
       case UpdateType.MINOR:
+        this.#clearTrip();
+        this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        this.#isLoadingError = data.isError;
+        this.#isLoading = false;
         this.#clearTrip();
         this.#renderTrip();
         break;

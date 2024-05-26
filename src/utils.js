@@ -139,10 +139,46 @@ function isDifference(firstPoint, secondPoint) {
   return firstPoint.dateFrom !== secondPoint.dateFrom || firstPoint.basePrice !== secondPoint.basePrice || sortPointsByTime(firstPoint, secondPoint) !== 0;
 }
 
+//адаптирование для клиента точек
+function adaptToClient(point){
+  const adaptedPoint = {
+    ...point,
+    price: point['base_price'],
+    dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
+    dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+    isFavorite: point['is_favorite']
+  };
+
+  delete adaptedPoint['base_price'];
+  delete adaptedPoint['date_from'];
+  delete adaptedPoint['date_to'];
+  delete adaptedPoint['is_favorite'];
+
+  return adaptedPoint;
+}
+
+//адаптирование для сервера точек
+function adaptToServer(point){
+  const adaptedPoint = {
+    ...point,
+    ['base_price']: Number(point.price),
+    ['date_from']: point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
+    ['date_to']: point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
+    ['is_favorite']: point.isFavorite
+  };
+
+  delete adaptedPoint.price;
+  delete adaptedPoint.dateFrom;
+  delete adaptedPoint.dateTo;
+  delete adaptedPoint.isFavorite;
+
+  return adaptedPoint;
+}
+
 //эксопрт всех функций для использования в других файлах
 export{
   formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,
   getSheduleDate,getRandomInteger,getRandomValue,getDate,isEscape,
   isPointFuture, isPointPresent, isPointPast, updatePoint,sortPointsByDay,
-  sortPointsByTime, sortPointsByPrice, isDifference
+  sortPointsByTime, sortPointsByPrice, isDifference, adaptToClient, adaptToServer
 };

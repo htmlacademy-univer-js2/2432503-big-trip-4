@@ -1,14 +1,19 @@
+import { UpdateType } from '../const';
 import Observable from '../framework/observable';
+import { adaptToClient, updatePoint } from '../utils';
 
 //описание  тoчки
 export default class PointsModel extends Observable {
   #service = null;
-  #points = null;
+  #points = [];
+  #destinationsModel = null;
+  #offersModel = null;
 
-  constructor(service){
+  constructor({apiService, destinationsModel, offersModel}){
     super();
-    this.#service = service;
-    this.#points = this.#service.points;
+    this.#service = apiService;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
   }
 
   //получение точки
@@ -16,27 +21,54 @@ export default class PointsModel extends Observable {
     return this.#points;
   }
 
-  add(UpdateType, point) {
-    this.#points.push(point);
-    this._notify(UpdateType, point);
-  }
+  async init() {
 
-  update(UpdateType, point) {
-    const index = this.#points.findIndex((item) => item.id === point.id);
+    try {
 
-    if (index === -1) {
-      throw new Error('can\'t find point');
+      await Promise.all([
+        this.#destinationsModel.init(), this.#offersModel.init()
+      ]);
+
+      const points = await this.#service.points;
+      this.#points = points.map(adaptToClient);
+      this._notify(UpdateType.INIT, {
+        isError: false
+      });
     }
 
-    this.#points[index] = point;
-    this._notify(UpdateType, point);
+    catch(error) {
+      this.#points = [];
+      this._notify(UpdateType.INIT, {
+        isError: true
+      });
+    }
+
   }
 
-  remove(UpdateType, point) {
+  add(updateType, point) {
+    this.#points.push(point);
+    this._notify(updateType, point);
+  }
+
+  async update(updateType, point) {
+    try {
+      const response = await this.#service.updatePoint(point);
+      const updatedPoint = adaptToClient(response);
+
+      this.#points = updatePoint(this.#points, updatedPoint);
+      this._notify(updateType, updatedPoint);
+    }
+
+    catch(error) {
+      throw new Error('Can\'t updatePoint');
+    }
+
+  }
+
+  remove(updateType, point) {
     const index = this.#points.findIndex((item) => item.id === point.id);
 
     this.#points.splice(index, 1);
-    this._notify(UpdateType, point);
+    this._notify(updateType, point);
   }
 }
-
