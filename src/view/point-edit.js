@@ -1,8 +1,9 @@
 import flatpickr from 'flatpickr';
-import { POINT_EMPTY, TYPES } from '../const.js';
+import { ButtonText, POINT_EMPTY, TYPES } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { formatStringToDateToTime } from '../utils.js';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 function createPointCitiesOptions(destinations){
   return (`
@@ -20,19 +21,19 @@ function createPointPhotos(destination){
   `);
 }
 
-function createPointTypes(currentType){
+function createPointTypes(currentType, isDisable){
   return TYPES.map((type) =>
     `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}"${currentType === type ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}${currentType === type ? 'checked' : ''}</label>
+    <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type[0].toUpperCase() + type.slice(1)}${currentType === type ? 'checked' : ''}${isDisable ? 'disabled' : ''}</label>
     </div>`).join('');
 }
 
-function createPointOffers(offers, selectedOffers){
+function createPointOffers(offers, selectedOffers, isDisable){
   const offerItems = offers.offers.map((offer) => {
     const offerName = offer.title.replace(' ', '').toLowerCase();
     return (`<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${offerName}" ${selectedOffers?.offers?.map((off) => off.id).includes(offer.id) ? 'checked' : ''}>
+    <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${offerName}" ${selectedOffers.includes(offer.id) ? 'checked' : ''}${isDisable ? 'disabled' : ''}>
     <label class="event__offer-label" for="${offer.id}">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -43,13 +44,26 @@ function createPointOffers(offers, selectedOffers){
   return (`<div class="event__available-offers">${offerItems}</div>`);
 }
 
+function createButton(isCreating, isDisable, isDeleting){
+  let text;
+  if (isCreating) {
+    text = ButtonText.CANCEL;
+  }
+
+  else{
+    text = isDeleting ? ButtonText.LOAD_DELETE : ButtonText.DELETE;
+  }
+
+  return `<button class="event__reset-btn" type="reset" ${isDisable ? 'disabled' : ''}>${text}</button>`;
+}
+
 function createPointEdit({state, destinations, pointOffers, isCreating}) {
 
-  const {point} = state;
-  const currentDestination = destinations.find((destination) => destination.id === (destination) ? point.destination.id : point.destination);
-  const {basePrice, dateFrom, dateTo, offers, type} = point;
+  const {point, isDisable, isSaving, isDeleting} = state;
+  const currentDestination = destinations.find((destination) => destination.id === point.destination);
+  const {price, dateFrom, dateTo, offers, type} = point;
   const currentOffers = pointOffers.find((offer) => offer.type === type);
-
+  const destinationName = (currentDestination) ? currentDestination.name : '';
   return (` <li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -63,7 +77,7 @@ function createPointEdit({state, destinations, pointOffers, isCreating}) {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${createPointTypes(type)}
+            ${createPointTypes(type, isDisable)}
           </fieldset>
         </div>
       </div>
@@ -72,16 +86,16 @@ function createPointEdit({state, destinations, pointOffers, isCreating}) {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${type[0].toUpperCase() + type.slice(1)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${(currentDestination) ? currentDestination.name : ''}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destinationName)}" list="destination-list-1" ${isDisable ? 'disabled' : ''}>
         ${createPointCitiesOptions(destinations)}
       </div>
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom ? formatStringToDateToTime(dateFrom) : ''}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom ? formatStringToDateToTime(dateFrom) : ''}"${isDisable ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo ? formatStringToDateToTime(dateTo) : ''}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo ? formatStringToDateToTime(dateTo) : ''}"${isDisable ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -89,11 +103,11 @@ function createPointEdit({state, destinations, pointOffers, isCreating}) {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(String(price))}"${isDisable ? 'disabled' : ''}>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${isCreating ? 'Cancel' : 'Delete'}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit"${isDisable ? 'disabled' : ''}>${isSaving ? ButtonText.LOAD_SAVE : ButtonText.SAVE}</button>
+      ${createButton(isCreating, isDisable, isDeleting)}
        ${isCreating ? '' : `<button class="event__rollup-btn" type="button">
        <span class="visually-hidden">Open event</span>
      </button>`}
@@ -101,7 +115,7 @@ function createPointEdit({state, destinations, pointOffers, isCreating}) {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-        ${createPointOffers(currentOffers, offers)}
+        ${createPointOffers(currentOffers, offers, isDisable)}
       </section>
 
       ${currentDestination ? `<section class="event__section  event__section--destination">
@@ -142,7 +156,7 @@ export default class PointEdit extends AbstractStatefulView {
 
   #deleteClickHandler = (event) => {
     event.preventDefault();
-    this.#onDeleteClick(this._state);
+    this.#onDeleteClick(PointEdit.parseStateToPoint(this._state.point));
   };
 
   constructor({ point = POINT_EMPTY, destinations, pointOffers, isCreating, onRollUpClick, onSubmitForm, onDeleteClick }) {
@@ -184,8 +198,26 @@ export default class PointEdit extends AbstractStatefulView {
     this.#setDatepicker();
   }
 
-  static parsePointToState = ({point}) => ({point});
-  static parseStateToPoint = (state) => state.point;
+  static parsePointToState(point){
+    return {
+      ...point,
+      isDisable: false,
+      isSaving: false,
+      isDeleting: false
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = {
+      ...state
+    };
+
+    delete point.isDisable;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  }
 
   reset = (point) => this.updateElement({point});
 
@@ -194,7 +226,8 @@ export default class PointEdit extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        type: event.target.value
+        type: event.target.value,
+        offers: []
       }
     });
   };
@@ -205,7 +238,7 @@ export default class PointEdit extends AbstractStatefulView {
     this.updateElement({
       point: {
         ...this._state.point,
-        destination: currentDestination
+        destination: currentDestination.id
       }
     });
   };
@@ -215,7 +248,7 @@ export default class PointEdit extends AbstractStatefulView {
     this._setState({
       point: {
         ...this._state.point,
-        basePrice: event.target.valueAsNumber
+        price: event.target.valueAsNumber
       }
     });
   };
@@ -224,8 +257,10 @@ export default class PointEdit extends AbstractStatefulView {
   #changeOffersHandler = () => {
     const checkedOffers = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
     this._setState({
-      ...this._state,
-      offers: checkedOffers.map((offer) => offer.id)
+      point: {
+        ...this._state,
+        offers: checkedOffers.map((offer) => offer.id)
+      }
     });
   };
 
