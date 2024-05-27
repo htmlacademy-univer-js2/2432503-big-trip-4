@@ -28,7 +28,8 @@ export default class NewPointPresenter {
       pointOffers: this.#offersModel.offers,
       isCreating: true,
       onRollUpClick: this.#rollUpClickHandler,
-      onSubmitForm: this.#submitFormHandler
+      onSubmitForm: this.#submitFormHandler,
+      onDeleteClick: this.#rollUpClickHandler
     });
 
     render(this.#pointEditComponent, this.#container.element, RenderPosition.AFTERBEGIN);
@@ -47,8 +48,27 @@ export default class NewPointPresenter {
     this.#onDestroy();
   }
 
+  setSaving() {
+    this.#pointEditComponent.updateElement({
+      isDisable: true,
+      issaving: true
+    });
+  }
+
+  setAborting() {
+    const resetForm = () => {
+      this.#pointEditComponent.updateElement({
+        isDisable: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this.#pointEditComponent.shake(resetForm);
+  }
+
   #submitFormHandler = (point) => {
-    this.#onDataChange(UserAction.ADD_POINT, UpdateType.MINOR, {id: crypto.randomUUID(), ...point});
+    this.#onDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
     this.destroy();
   };
 

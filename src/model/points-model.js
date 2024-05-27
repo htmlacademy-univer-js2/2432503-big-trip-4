@@ -45,9 +45,19 @@ export default class PointsModel extends Observable {
 
   }
 
-  add(updateType, point) {
-    this.#points.push(point);
-    this._notify(updateType, point);
+  async add(updateType, point) {
+    try {
+      const response = await this.#service.addPoint(point);
+      const newPoint = adaptToClient(response);
+
+      this.#points.push(newPoint);
+      this._notify(updateType, newPoint);
+    }
+
+    catch(error) {
+      throw new Error('Can\'t add point');
+    }
+
   }
 
   async update(updateType, point) {
@@ -60,15 +70,21 @@ export default class PointsModel extends Observable {
     }
 
     catch(error) {
-      throw new Error('Can\'t updatePoint');
+      throw new Error('Can\'t update point');
     }
 
   }
 
-  remove(updateType, point) {
-    const index = this.#points.findIndex((item) => item.id === point.id);
+  async remove(updateType, point) {
 
-    this.#points.splice(index, 1);
-    this._notify(updateType, point);
+    try {
+      await this.#service.deletePoint(point);
+      this.#points = this.#points.filter((item) => item.id !== point.id);
+      this._notify(updateType);
+    }
+
+    catch(error) {
+      throw new Error('Can\'t delete point');
+    }
   }
 }

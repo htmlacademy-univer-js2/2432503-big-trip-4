@@ -131,12 +131,12 @@ function sortPointsByTime(firstPoint, secondPoint) {
 
 //для сортировки точек по цене
 function sortPointsByPrice(firstPoint, secondPoint) {
-  return secondPoint.basePrice - firstPoint.basePrice;
+  return secondPoint.price - firstPoint.price;
 }
 
 //проверка на разницу между точками
 function isDifference(firstPoint, secondPoint) {
-  return firstPoint.dateFrom !== secondPoint.dateFrom || firstPoint.basePrice !== secondPoint.basePrice || sortPointsByTime(firstPoint, secondPoint) !== 0;
+  return firstPoint.dateFrom !== secondPoint.dateFrom || firstPoint.price !== secondPoint.price || sortPointsByTime(firstPoint, secondPoint) !== 0;
 }
 
 //адаптирование для клиента точек

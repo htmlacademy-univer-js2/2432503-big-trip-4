@@ -112,8 +112,21 @@ const EmptyListText = {
   [FilterTypes.PAST]: 'There are no past events'
 };
 
+const ButtonText = {
+  SAVE: 'Save',
+  DELETE: 'Delete',
+  CANCEL: 'Cancel',
+  LOAD_SAVE: 'Saving...',
+  LOAD_DELETE: 'Deleting...'
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000
+};
+
 export{
   CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT,
   DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, PointMode, ACTIVE_SORT_TYPES, SortOptions,
-  UpdateType, UserAction, FilterOptions, EmptyListText
+  UpdateType, UserAction, FilterOptions, EmptyListText, ButtonText, TimeLimit
 };
