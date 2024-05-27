@@ -1,12 +1,12 @@
 import Sort from '../view/sort';
 import EventList from '../view/event-list';
-import {RenderPosition, remove, render, replace} from '../framework/render';
-import {sortPointsByDay, sortPointsByPrice, sortPointsByTime, updatePoint} from '../utils';
+import {RenderPosition, remove, render} from '../framework/render';
 import EmptyListView from '../view/empty-list';
 import PointPresenter from './point-presenter';
 import { ACTIVE_SORT_TYPES, FilterOptions, FilterTypes, SortOptions, SortTypes, TimeLimit, UpdateType, UserAction } from '../const';
 import NewPointPresenter from './new-point-presenter';
 import UiBlocker from '../framework/ui-blocker/ui-blocker';
+import TripInfoPresenter from './trip-info-presenter';
 
 
 //отрисовывает все
@@ -14,7 +14,6 @@ export default class BoardPresenter {
   #tripContainer = null;
   #offersModel = null;
   #pointsModel = null;
-  #points = [];
   #pointPresenters = new Map();
   #sort = null;
   #destinationsModel = null;
@@ -26,19 +25,22 @@ export default class BoardPresenter {
   #currentSortType = SortTypes.DAY;
   #isLoading = true;
   #isLoadingError = false;
+  #tripInfoContainer = null;
+  #tripInfoPresenter = null;
 
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({tripContainer, destinationsModel, offersModel, pointsModel, filtersModel, onNewPointDestroy}){
+  constructor({tripContainer, tripInfoContainer, destinationsModel, offersModel, pointsModel, filtersModel, onNewPointDestroy}){
 
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
     this.#filtersModel = filtersModel;
+    this.#tripInfoContainer = tripInfoContainer;
 
     this.#newPointPresenter = new NewPointPresenter({
       container: this.#eventList,
@@ -56,19 +58,8 @@ export default class BoardPresenter {
     this.#filterType = this.#filtersModel.filter;
     const points = this.#pointsModel.points;
     const filteredPoints = FilterOptions[this.#filterType](points);
-    switch (this.#currentSortType) {
-      case SortTypes.TIME:
-        filteredPoints.sort(sortPointsByTime);
-        break;
-      case SortTypes.PRICE:
-        filteredPoints.sort(sortPointsByPrice);
-        break;
-      default:
-        filteredPoints.sort(sortPointsByDay);
-        break;
-    }
 
-    return filteredPoints;
+    return SortOptions[this.#currentSortType](filteredPoints);
   }
 
   init() {
@@ -103,8 +94,22 @@ export default class BoardPresenter {
     this.#renderPoints();
   };
 
+  #renderTripInfo = () => {
+    this.#tripInfoPresenter = new TripInfoPresenter({
+      container: this.#tripInfoContainer,
+      destinationsModel: this.#destinationsModel,
+      offersModel: this.#offersModel
+    });
+
+    const sortedPoints = SortOptions[SortTypes.DAY](this.points);
+    this.#tripInfoPresenter.init(sortedPoints);
+  };
+
+  #clesrTripInfo = () => {
+    this.#tripInfoPresenter.destroy();
+  };
+
   #renderSort = () => {
-    const prevSort = this.#sort;
     const sortTypes = Object.values(SortTypes).map((sortType) => ({
       type: sortType,
       active: ACTIVE_SORT_TYPES.indexOf(sortType)
@@ -114,19 +119,9 @@ export default class BoardPresenter {
       currentSortType: this.#currentSortType,
       onSortTypeChange: this.#sortTypeChangeHandler
     });
-
-    if (prevSort) {
-      replace(this.#sort, prevSort);
-      remove(prevSort);
-    }
-    else {
-      render(this.#sort, this.#tripContainer);
-    }
-  };
-
-  #sortPoints = (sortType) => {
-    this.#currentSortType = sortType;
-    this.#points = SortOptions[this.#currentSortType](this.#points);
+    this.#clesrTripInfo();
+    this.#renderTripInfo();
+    render(this.#sort, this.#tripContainer);
   };
 
   #renderPoints = () => {
@@ -172,12 +167,6 @@ export default class BoardPresenter {
     this.#currentSortType = SortTypes.DAY;
     this.#filtersModel.set(UpdateType.MAJOR, FilterTypes.EVERYTHING);
     this.#newPointPresenter.init();
-  };
-
-
-  #onDataChange = (updatedPoint) => {
-    this.#points = updatePoint(this.#points, updatedPoint);
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
   #onModeChange = () => {
@@ -252,6 +241,8 @@ export default class BoardPresenter {
         this.#renderTrip();
         break;
       case UpdateType.MINOR:
+        this.#clesrTripInfo();
+        this.#renderTripInfo();
         this.#clearTrip();
         this.#renderTrip();
         break;
@@ -263,6 +254,7 @@ export default class BoardPresenter {
 
         this.#isLoading = false;
         this.#clearTrip();
+        this.#renderTripInfo();
         this.#renderTrip();
         break;
     }

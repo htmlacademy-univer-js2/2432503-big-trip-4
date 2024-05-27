@@ -1,4 +1,4 @@
-import { FilterOptions, FilterTypes, UpdateType } from '../const';
+import { FilterHasPoints, FilterTypes, UpdateType } from '../const';
 import { remove, render, replace } from '../framework/render';
 import Filter from '../view/filter-view';
 
@@ -21,7 +21,7 @@ export default class FilterPresenter {
     this.#filterComponent = new Filter({
       activeFilters: this.#getActiveFilters(this.#pointsModel.points),
       selectedFilter: this.#filtersModel.filter,
-      onFilterTypeChange: this.#filterTypeChangeHandler
+      onItemChange: this.#filterTypeChangeHandler
     });
 
     if (prevFilterComponent === null) {
@@ -34,7 +34,7 @@ export default class FilterPresenter {
   }
 
   #getActiveFilters(points) {
-    return Object.values(FilterTypes).filter((type) => FilterOptions[type](points));
+    return Object.values(FilterTypes).filter((type) => FilterHasPoints[type](points));
   }
 
   #modelEventHandler = (updateType) => {

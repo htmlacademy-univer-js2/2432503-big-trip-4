@@ -258,7 +258,7 @@ export default class PointEdit extends AbstractStatefulView {
     const checkedOffers = [...this.element.querySelectorAll('.event__offer-checkbox:checked')];
     this._setState({
       point: {
-        ...this._state,
+        ...this._state.point,
         offers: checkedOffers.map((offer) => offer.id)
       }
     });
@@ -318,7 +318,7 @@ export default class PointEdit extends AbstractStatefulView {
   };
 
   //удаление элемента
-  #removeElement = () => {
+  removeElement = () => {
     super.removeElement();
     if (this.#datepickerFrom) {
       this.#datepickerFrom.destroy();

@@ -125,8 +125,15 @@ const TimeLimit = {
   UPPER_LIMIT: 1000
 };
 
+const FilterHasPoints = {
+  [FilterTypes.EVERYTHING]: () => true,
+  [FilterTypes.FUTURE]: (points) => points.some((point) => isPointFuture(point)),
+  [FilterTypes.PRESENT]: (points) => points.some((point) => isPointPresent(point)),
+  [FilterTypes.PAST]: (points) => points.some((point) => isPointPast(point))
+};
+
 export{
   CITIES, DESCRIPTION, PRICE, DURATION, TYPES, OFFERS, POINT_EMPTY, DEFAULT_TYPE,OFFER_COUNT,
   DESTINATION_COUNT, POINT_COUNT, FilterTypes, SortTypes, PointMode, ACTIVE_SORT_TYPES, SortOptions,
-  UpdateType, UserAction, FilterOptions, EmptyListText, ButtonText, TimeLimit
+  UpdateType, UserAction, FilterOptions, EmptyListText, ButtonText, TimeLimit, FilterHasPoints
 };

@@ -69,7 +69,6 @@ export default class NewPointPresenter {
 
   #submitFormHandler = (point) => {
     this.#onDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
-    this.destroy();
   };
 
   #rollUpClickHandler = () => {
