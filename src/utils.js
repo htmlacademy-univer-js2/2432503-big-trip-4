@@ -2,7 +2,7 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { DURATION } from './const';
+import { DURATION, SortOptions, SortTypes } from './const';
 
 //расширения
 dayjs.extend(duration);
@@ -175,10 +175,34 @@ function adaptToServer(point){
   return adaptedPoint;
 }
 
+//получение информации для заголовка
+function getInfoTitle(points = [], destinations = []) {
+  const tripDestinations = SortOptions[SortTypes.DAY]([...points]).map((point) => destinations.find((destination) => destination.id === point.destination).name);
+
+  return tripDestinations.length <= 3 ? tripDestinations.join('&nbsp;&mdash;&nbsp;') : `${tripDestinations.at(0)}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${tripDestinations.at(-1)}`;
+}
+
+//получение информации для продолжительности поездки
+function getInfoDuration(points = []) {
+  const sortedPoints = SortOptions[SortTypes.DAY]([...points]);
+
+  return (sortedPoints.length > 0) ? `${dayjs(sortedPoints.at(0).dateFrom).format('DD MMM')}&nbsp;&mdash;&nbsp;${dayjs(sortedPoints.at(-1).dateFrom).format('DD MMM')}` : '';
+}
+
+//стоимость предлодений
+function getOffersCost(offerIds = [], offers = []) {
+  return offerIds.reduce((cost, id) => cost + (offers.find((offer) => offer.id === id)?.price ?? 0), 0);
+}
+
+//получение информации для стоимости всех точек
+function getInfoCost(points = [], offers = []) {
+  return points.reduce((cost, point) => cost + point.price + getOffersCost(point.offers, offers.find((offer) => point.type === offer.type)?.offers), 0);
+}
+
 //эксопрт всех функций для использования в других файлах
 export{
   formatStringToDateToTime,formatToShortDate,formatToTime,getPointDuration,
   getSheduleDate,getRandomInteger,getRandomValue,getDate,isEscape,
   isPointFuture, isPointPresent, isPointPast, updatePoint,sortPointsByDay,
-  sortPointsByTime, sortPointsByPrice, isDifference, adaptToClient, adaptToServer
+  sortPointsByTime, sortPointsByPrice, isDifference, adaptToClient, adaptToServer, getInfoTitle, getInfoDuration, getInfoCost
 };

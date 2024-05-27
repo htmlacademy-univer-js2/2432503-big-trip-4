@@ -1,6 +1,6 @@
 import { UpdateType } from '../const';
 import Observable from '../framework/observable';
-import { adaptToClient, updatePoint } from '../utils';
+import { adaptToClient, adaptToServer, updatePoint } from '../utils';
 
 //описание  тoчки
 export default class PointsModel extends Observable {
@@ -47,7 +47,8 @@ export default class PointsModel extends Observable {
 
   async add(updateType, point) {
     try {
-      const response = await this.#service.addPoint(point);
+      const adaptedPointToServer = adaptToServer(point);
+      const response = await this.#service.addPoint(adaptedPointToServer);
       const newPoint = adaptToClient(response);
 
       this.#points.push(newPoint);
