@@ -27,13 +27,14 @@ export default class BoardPresenter {
   #isLoadingError = false;
   #tripInfoContainer = null;
   #tripInfoPresenter = null;
+  #isCreating = null;
 
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({tripContainer, tripInfoContainer, destinationsModel, offersModel, pointsModel, filtersModel, onNewPointDestroy}){
+  constructor({tripContainer, tripInfoContainer, destinationsModel, offersModel, pointsModel, filtersModel}){
 
     this.#tripContainer = tripContainer;
     this.#destinationsModel = destinationsModel;
@@ -47,7 +48,7 @@ export default class BoardPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onDataChange: this.#actionViewChangeHandler,
-      onDestroy: onNewPointDestroy
+      onDestroy: this.#newPointDestroyHandler
     });
 
     this.#pointsModel.addObserver(this.#modelEventHandler);
@@ -83,7 +84,7 @@ export default class BoardPresenter {
       return;
     }
 
-    if (this.points.length === 0){
+    if (this.points.length === 0 && !this.#isCreating){
       this.#renderEmptyList();
       return;
     }
@@ -164,9 +165,11 @@ export default class BoardPresenter {
   };
 
   createPoint = () => {
+    this.#isCreating = true;
     this.#currentSortType = SortTypes.DAY;
     this.#filtersModel.set(UpdateType.MAJOR, FilterTypes.EVERYTHING);
     this.#newPointPresenter.init();
+    this.#isCreating = false;
   };
 
   #onModeChange = () => {
@@ -257,6 +260,14 @@ export default class BoardPresenter {
         this.#renderTripInfo();
         this.#renderTrip();
         break;
+    }
+  };
+
+  #newPointDestroyHandler = () => {
+    this.#isCreating = false;
+
+    if (this.points.length === 0 ) {
+      this.#modelEventHandler(UpdateType.MINOR);
     }
   };
 }

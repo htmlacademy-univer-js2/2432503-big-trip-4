@@ -91,21 +91,14 @@ export default class PointPresenter {
   }
 
   setAborting() {
-    if(this.#mode === PointMode.EDIT) {
-      const resetForm = () => {
-        this.#pointEditComponent.updateElement({
-          isDisable: false,
-          isSaving: false,
-          isDeleting: false
-        });
-      };
-
-      this.#pointEditComponent.shake(resetForm);
-    }
-
-    else{
-      this.#pointEditComponent.shake();
-    }
+    const resetForm = () => {
+      this.#pointEditComponent.updateElement({
+        isDisable: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+    this.#pointEditComponent.shake(resetForm);
   }
 
   #favoriteClickHandler = () => {
@@ -119,7 +112,7 @@ export default class PointPresenter {
 
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
-    this.#onModeChange(this.#point.id, this.#mode);
+    this.#onModeChange();
     this.#mode = PointMode.EDIT;
   };
 
@@ -158,9 +151,10 @@ export default class PointPresenter {
     if(isMinor){
       this.#onDataChange(UserAction.UPDATE_POINT, isMinor ? UpdateType.MINOR : UpdateType.PATCH, updatePoint);
     }
-
-    this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#onFormKeyDown);
+    if (this.#pointEditComponent.isDisable) {
+      this.#replaceFormToPoint();
+      document.removeEventListener('keydown', this.#onFormKeyDown);
+    }
   };
 
   //удаление значения формы
